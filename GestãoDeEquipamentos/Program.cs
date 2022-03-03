@@ -9,12 +9,17 @@ namespace GestãoDeEquipamentos
         }
         static void AdicionarEquipamentos(ref int i, ref string[] lista,ref int contador,ref string[] equipamentos,ref int z,ref int d)
         {
+            int number = 0;
+            int dia = 0;
+            int mes = 0;
+            int ano = 0;
+            int preço = 0;
+            string data = "";
             string digitado = "";
             string a = "";
             string sair = "";
             while (true)
-            {
-                
+            {                
                     Console.WriteLine($"Escreva o nome do produto");
                     a = Console.ReadLine();
                     if (Array.Exists(lista, element => element == a))
@@ -31,31 +36,121 @@ namespace GestãoDeEquipamentos
                     }
                     lista[i] = a;
                     d++;
-                   equipamentos[z] = a;
-                   
+                   equipamentos[z] = a;            
                     z++;
                     i++;
-
+                while (true)
+                {
                     Console.WriteLine($"Escreva o preço do produto");
                     digitado = Console.ReadLine();
+                    if (digitado.Length == 0)
+                    {
+                        Console.WriteLine($"Favor prencher o compo");
+                        continue;
+                    }
+                    bool isNumber = int.TryParse(digitado, out preço);
+                    if (isNumber == false)
+                    {
+                        Console.WriteLine($"favor colocar um número válido ");
+                        continue;
+                    }
+                    if (preço == 0 || preço < 1)
+                    {
+                        Console.WriteLine($"O preço do produto deve ser maior que 0 ");
+                        continue;
+                    }
                     lista[i] = digitado;
                     i++;
-                    Console.WriteLine($"Escreva a série do produto");
+                    break;
+                }
+                 
+                   while (true)
+                   {
+                    Console.WriteLine($"Escreva a série do produto com AAA-AAA");
                     digitado = Console.ReadLine();
-                    lista[i] = digitado;
-                    i++;
-                    Console.WriteLine($"Escreva a data de fabricação do produto");
+                    if (digitado.Length < 7 || digitado.Length > 8)
+                    {
+                        Console.WriteLine($"Série do produto inválido");
+                        continue;
+                    }
+                    if (digitado[3] != '-')
+                    {
+                        Console.WriteLine($"Série do produto inválido");
+                        continue;
+                    }
+                    if (Array.Exists(lista, element => element == digitado))
+                    {
+                        Console.WriteLine($"Série do produto já existente");
+                        continue;
+                    }
+                      lista[i] = digitado;
+                      i++;
+                      break;
+                   }
+                    while (true)
+                    {
+                    Console.WriteLine($"Escolha um dia para o Seu Equipamento");
                     digitado = Console.ReadLine();
-                    lista[i] = digitado;
+                    bool isNumber = int.TryParse(digitado, out number);
+                    if (isNumber == false)
+                    {
+                        Console.WriteLine($"Favor utilizar números");
+                        continue;
+                    }
+                    dia = Convert.ToInt32(digitado);
+                    if (dia > 30)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Escolha um dia de fabricação válido");
+                        continue;
+                    }
+
+                    Console.WriteLine($"Escolha um mes de fabricação");
+                    digitado = Console.ReadLine();
+                    bool lol = int.TryParse(digitado, out number);
+                    if (lol== false)
+                    {
+                        Console.WriteLine($"Favor utilizar números");
+                        continue;
+                    }
+                    mes = Convert.ToInt32(digitado);
+                    if (mes > 12)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"Escolha um mes válido");
+                        continue;
+                    }
+
+                    Console.WriteLine($"Escolha um ano de fabricação");
+                    digitado = Console.ReadLine();
+                    bool cs = int.TryParse(digitado, out number);
+                    if (cs == false)
+                    {
+                        Console.WriteLine($"Favor utilizar números");
+                        continue;
+                    }
+                    ano = Convert.ToInt32(digitado); ;
+
+                  DateTime  Entrada = new DateTime(ano, mes, dia);
+                    data = Entrada.ToShortDateString();
+                    lista[i] =data;
                     i++;
+                    break;
+                    }
+                  while (true)
+                   {
                     Console.WriteLine($"Escreva o fabricante do produto");
                     digitado = Console.ReadLine();
+                    if (digitado.Length<1)
+                    {
+                        Console.WriteLine($"O campo não pode ser vázio");
+                        continue;
+                    }
                     lista[i] = digitado;
                     i++;
-                    
-                  
+                    break;
+                   }       
                     contador++;
-                
                 Console.Clear();
                 Console.WriteLine("Equipamento adicionado com sucesso");
                 Console.WriteLine();
@@ -73,7 +168,6 @@ namespace GestãoDeEquipamentos
                     {
                         break;
                     }
-
                 }
                 if (sair == "c")
                 {
@@ -84,9 +178,7 @@ namespace GestãoDeEquipamentos
                 {
                     Console.Clear();
                     break;
-                }
-                
-
+                }               
             }
            
         }
@@ -97,7 +189,7 @@ namespace GestãoDeEquipamentos
             string digitado = "";
             while (true)
             {
-                if (MostrarMenu == 0)
+                if (d == 0)
                 {
                     Console.WriteLine("Nenhum item adicionado ainda... digite s para sair ");
                     digitado = Console.ReadLine();
@@ -228,7 +320,7 @@ namespace GestãoDeEquipamentos
             string digitado;
             while (true)
             {
-                if (MostrarMenu == 0)
+                if (d == 0)
                 {
                     Console.WriteLine("Nenhum item adicionado ainda... digite s para sair ");
                     digitado = Console.ReadLine();
@@ -399,6 +491,7 @@ namespace GestãoDeEquipamentos
                             lista[i] = lista[i + 5];
                         }
                         Array.Resize(ref lista, lista.Length - 1);
+                        Console.WriteLine($"Equipamento excluido");
                     }
                     else
                     {
@@ -444,10 +537,11 @@ namespace GestãoDeEquipamentos
             string item = "";
             string data = "";
             string sair = "";
+            int number;
             
             while (true)
             {
-                if (contador == 0)
+                if (d == 0)
                 {
                     Console.Clear();
                     Console.WriteLine("Favor ter pelo menos um equipamento registrado para poder acessar o chamados!!");
@@ -466,39 +560,56 @@ namespace GestãoDeEquipamentos
                 k++;
                 chamados[j] = item;
                 j++;
-                Console.WriteLine("Escolha uma descrição para o Chamado");
-                item = Console.ReadLine();
-                chamados[j] = item;
-                j++;            
-                Console.WriteLine("Equipamentos já registrados para uso");
-                for (int i = 0; i < d; i++)
+                while (true)
                 {
-                    Console.WriteLine("- " + equipamentos[i]);
-                }
-                Console.WriteLine("Escolha um equipamento para o chamado");
-                item = Console.ReadLine();
-                if (item.Length < 6)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Escolha um equipamento para válido");
-                    continue;
-                }
-                if (Array.Exists(lista, element => element == item))
-                {
-                    int a = Array.IndexOf(lista, item);
-                    chamados[j] = lista[a];
+                    Console.WriteLine("Escolha uma descrição para o Chamado");
+                    item = Console.ReadLine();
+                    if (item.Length < 1)
+                    {
+                        Console.WriteLine("Erro campo vazio");
+                    }
+                    chamados[j] = item;
                     j++;
+                    break;
                 }
-                else
+                while (true)
                 {
-                    Console.WriteLine("Favor colocar um nome de um item já existente");
-                }
-
-              
+                    Console.WriteLine("Equipamentos já registrados para uso");
+                    for (int i = 0; i < d; i++)
+                    {
+                        Console.WriteLine("- " + equipamentos[i]);
+                    }
+                    Console.WriteLine("Escolha um equipamento para o chamado");
+                    item = Console.ReadLine();
+                    if (item.Length < 6)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Escolha um equipamento para válido");
+                        continue;
+                    }
+                    if (Array.Exists(lista, element => element == item))
+                    {
+                        int a = Array.IndexOf(lista, item);
+                        chamados[j] = lista[a];
+                        j++;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Favor colocar um nome de um item já existente");
+                        continue;
+                    }
+                    break;
+                }                    
                 while (true)
                 {
                     Console.WriteLine($"Escolha um dia para o Seu chamado");
                     item = Console.ReadLine();
+                    bool lol = int.TryParse(item, out number);
+                    if (lol == false)
+                    {
+                        Console.WriteLine($"Favor utilizar números");
+                        continue;
+                    }
                     dia = Convert.ToInt32(item);
                     if (dia > 30)
                     {
@@ -509,6 +620,12 @@ namespace GestãoDeEquipamentos
 
                     Console.WriteLine($"Escolha um mes para o Seu chamado");
                     item = Console.ReadLine();
+                    bool vasco = int.TryParse(item, out number);
+                    if (vasco == false)
+                    {
+                        Console.WriteLine($"Favor utilizar números");
+                        continue;
+                    }
                     mes = Convert.ToInt32(item);
                     if (mes > 12)
                     {
@@ -519,7 +636,13 @@ namespace GestãoDeEquipamentos
 
                     Console.WriteLine($"Escolha um ano para o Seu chamado");
                     item = Console.ReadLine();
-                    ano = Convert.ToInt32(item); ;
+                    bool inter = int.TryParse(item, out number);
+                    if (inter == false)
+                    {
+                        Console.WriteLine($"Favor utilizar números");
+                        continue;
+                    }
+                    ano = Convert.ToInt32(item); 
 
                     dataEntrada = new DateTime(ano, mes, dia);
                     data = dataEntrada.ToShortDateString();
